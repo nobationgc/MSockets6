@@ -22,20 +22,6 @@ chmod +x main.sh
 
 Make sure you have Bash, SQLite3, Git, and Go installed.
 
-## Push to GitHub
-
-Initialize git (if not done), add all files, commit, and push:
-
-```bash
-git init
-git remote add origin https://github.com/yourusername/MSockets6.git
-git add .
-git commit -m "Initial commit"
-git push -u origin main
-```
-
-Replace `yourusername` with your GitHub username.
-
 ## Usage
 
 Run the main script:
