@@ -50,3 +50,9 @@ bash main.sh
 ## License
 
 Apache 2.0
+
+## Expected SHA256:
+
+```txt
+SHA: 0244ecfb47bf0e21448a1d1ba8620da13374fb71c2c33e356d7cea65fd2198b1
+```
