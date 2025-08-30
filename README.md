@@ -34,7 +34,6 @@ bash main.sh
 
 - `msk --configure-ddos` : Configure DDoS attack parameters
 - `msk --attack-ddos` : Run DDoS attack simulation
-- `msk --show-progress(ddos)` : Show DDoS attack progress
 - `msk --update` : Update MSockets6 from GitHub
 - `clear` / `cls` : Clear the screen
 - `/fallback_ on|off|toggle` : Toggle fallback mode
