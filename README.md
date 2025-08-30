@@ -53,5 +53,5 @@ Apache 2.0
 ## Expected SHA256:
 
 ```txt
-SHA: fcd4640ca9e6af97c0a20e6e4e06658a5ccc9799e498733838554d699ea28005
+SHA: fcd4640ca9e6af97c0a20e6e4e06658a5ccc9799e498733838554d699ea28005 | main.sh
 ```
