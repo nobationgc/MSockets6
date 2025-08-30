@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#sha256sum: 0244ecfb47bf0e21448a1d1ba8620da13374fb71c2c33e356d7cea65fd2198b1
-
 DB=".data/ServiceDaemon.db"
 mkdir -p "$(dirname "$DB")"
 
@@ -76,7 +74,7 @@ configure_ddos() {
   done
 
   while true; do
-    read -e -p "Tool to use (hping/nping/etc): " tool
+    read -e -p "Tool to use (hping3/nping/etc): " tool
     [ "$tool" = "exit" ] && echo "Cancelled." && return
     history -s "$tool"
     [[ "$tool" =~ ^[a-zA-Z0-9_]+$ ]] && break || echo "Invalid tool name."
@@ -115,13 +113,13 @@ configure_ddos() {
 }
 
 run_ddos_attack() {
-  # Llama a runtime.go con el modo ataque
-  go run .confg/runtime.go --attack-ddos
+
+  python3 .confg/backend.py --attack-ddos
 }
 
 show_ddos_progress() {
-  # Llama a runtime.go con el modo progreso
-  go run .confg/runtime.go --show-progress-ddos
+
+  python3 .confg/backend.py --show-progress-ddos
 }
 
 auto_update() {

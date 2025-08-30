@@ -1,11 +1,11 @@
 # MSockets6
 
-MSockets6 is a command-line tool for managing network socket operations, including DDoS configuration and attack simulation, with persistent preferences and command history.
+MSockets6 is a command-line tool for managing network socket operations, including DDoS configuration and attack with persistent preferences and command history.
 
 ## Features
 
 - Interactive shell with command history
-- DDoS attack configuration and simulation
+- DDoS attack configuration and execution (**For testing purposes only in controlled environments, NEVER against unauthorized targets**)
 - SQLite-based persistent preferences
 - Auto-update from GitHub repository
 
