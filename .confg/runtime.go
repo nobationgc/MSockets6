@@ -10,7 +10,7 @@ import (
 
 func main() {
     if len(os.Args) < 8 {
-        fmt.Println("Uso: go run runtime.go <Target> <Port> <FileSize> <AttackType> <Tool> <Interval> <Sessions>")
+        fmt.Println("Usage: go run runtime.go <Target> <Port> <FileSize> <AttackType> <Tool> <Interval> <Sessions>")
         return
     }
 
@@ -24,7 +24,7 @@ func main() {
 
     numSessions, err := strconv.Atoi(SessionsStr)
     if err != nil {
-        fmt.Println("Error: Sessions debe ser un número entero")
+        fmt.Println("Error: Sessions must be an integer")
         return
     }
 
@@ -39,7 +39,7 @@ func main() {
         args = []string{Target, "-p", Port, "-i", Interval, "--data", FileSize, "-t", AttackType}
     }
 
-    fmt.Printf("[+] Lanzando %d subshell(s) ejecutando: %s %s\n", numSessions, Tool, strings.Join(args, " "))
+    fmt.Printf("[+] Launching %d subshell(s) running: %s %s\n", numSessions, Tool, strings.Join(args, " "))
 
     // Lanzar varias instancias (subshells) de manera concurrente
     for i := 0; i < numSessions; i++ {
@@ -49,9 +49,9 @@ func main() {
 
         err := cmd.Start()
         if err != nil {
-            fmt.Println("Error lanzando subshell:", err)
+            fmt.Println("Error launching subshell:", err)
         } else {
-            fmt.Printf("Subshell %d lanzada con PID %d\n", i+1, cmd.Process.Pid)
+            fmt.Printf("Subshell %d launched with PID %d\n", i+1, cmd.Process.Pid)
         }
     }
 }
