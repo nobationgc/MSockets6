@@ -31,14 +31,55 @@ banner() {
 
 HISTFILE=".data/msockets_history"
 touch "$HISTFILE"
-# Load history on startup
 history -r "$HISTFILE"
 
 banner
 
+# --------------------------
+# Helpers seguros para dry-run / mem-req
+# --------------------------
+RUNTIME_BIN="go run .confg/runtime.go"   # <- Cambiar si compilás a un binario
+
+_read_ddos_config() {
+  local ddos_hist=".data/ddos_history"
+  if [ ! -f "$ddos_hist" ]; then
+    echo "[!] No ddos configuration found at $ddos_hist"
+    return 1
+  fi
+  mapfile -t cfg < "$ddos_hist"
+  Target="${cfg[0]:-}"
+  Port="${cfg[1]:-}"
+  FileSize="${cfg[2]:-}"
+  AttackType="${cfg[3]:-}"
+  Tool="${cfg[4]:-}"
+  Interval="${cfg[5]:-}"
+  Sessions="${cfg[6]:-}"
+
+  if [ -z "$Target" ] || [ -z "$Port" ] || [ -z "$FileSize" ] || [ -z "$AttackType" ] || [ -z "$Tool" ] || [ -z "$Sessions" ]; then
+    echo "[!] ddos_history incomplete. Run --configure-ddos first."
+    return 1
+  fi
+  return 0
+}
+
+appear() {
+  if ! _read_ddos_config; then return 1; fi
+  $RUNTIME_BIN --dry-out "$Target" "$Port" "$FileSize" "$AttackType" "$Tool" "$Interval" "$Sessions"
+}
+
+appear_mem() {
+  if ! _read_ddos_config; then return 1; fi
+  $RUNTIME_BIN --mem-req "$Target" "$Port" "$FileSize" "$AttackType" "$Tool" "$Interval" "$Sessions"
+}
+
+appear_both() {
+  if ! _read_ddos_config; then return 1; fi
+  $RUNTIME_BIN --dry-out --mem-req "$Target" "$Port" "$FileSize" "$AttackType" "$Tool" "$Interval" "$Sessions"
+}
+# --------------------------
+
 configure_ddos() {
   local ddos_hist=".data/ddos_history"
-  # Overwrite history file for each new configuration
   : > "$ddos_hist"
   history -r "$ddos_hist"
   echo "=== DDoS Configuration ==="
@@ -98,7 +139,6 @@ configure_ddos() {
     [[ "$sessions" =~ ^[0-9]+$ ]] && break || echo "Invalid sessions."
   done
 
-  # Save all parameters to ddos_history (overwrite)
   {
     echo "$target"
     echo "$port"
@@ -117,30 +157,10 @@ run_ddos_attack() {
   python3 .confg/backend.py --attack-ddos
 }
 
-show_ddos_progress() {
-
-  python3 .confg/backend.py --show-progress-ddos
-}
-
-auto_update() {
-  REPO_URL="https://github.com/nobationgc/MSockets6.git"
-  REPO_DIR="$(pwd)"
-  if [ -d "$REPO_DIR/.git" ]; then
-    echo "[*] Updating MSockets6 from $REPO_URL ..."
-    git pull origin main && echo "[+] Update complete." || echo "[!] Update failed."
-  else
-    echo "[*] No git repository found. Cloning fresh copy..."
-    git clone "$REPO_URL" MSockets6_update_tmp && echo "[+] Clone complete. Please manually replace your files from MSockets6_update_tmp." || echo "[!] Clone failed."
-  fi
-}
-
 while true; do
-  # Uses read -e to enable editing with arrows
   read -e -p "[MSockets6]: " line
-  # Save the command to history
   echo "$line" >> "$HISTFILE"
   history -s "$line"
-  # Convert the line to an array of words
   input=($line)
   [ ${#input[@]} -eq 0 ] && continue
 
@@ -148,69 +168,26 @@ while true; do
   args_array=("${input[@]:1}")
 
   case "$cmd" in
-    "clear")
+    "clear"|"cls")
       clear
       banner
       ;;
-
-    "cls")
-      clear
-      banner
-      ;;
-    "/fallback_")
-      if [ ${#args_array[@]} -ge 1 ]; then
-        case "${args_array[0]}" in
-          on|1|true)
-            got_=1
-            ;;
-          off|0|false)
-            got_=0
-            ;;
-          toggle)
-            if [ "$got_" -eq 0 ]; then got_=1; else got_=0; fi
-            ;;
-          *)
-            echo "[!] Usage: /fallback_ on|off|toggle"
-            continue
-            ;;
-        esac
-      else
-        got_=1
-      fi
-      sqlite3 "$DB" "INSERT OR REPLACE INTO preferences(key, value) VALUES('got_', '$got_');"
-      echo "[+]: Fallback updated.. got_ = $got_"
+    "msk")
+      case "${args_array[0]}" in
+        "--configure-ddos") configure_ddos ;;
+        "--get-ddos-dry") appear ;;
+        "--get-ddos-mem") appear_mem ;;
+        "--get-ddos-preview") appear_both ;;
+        "--attack-ddos") run_ddos_attack ;;
+        *) echo "[!] Unknown msk subcommand: ${args_array[0]}" ;;
+      esac
       ;;
     "exit")
       echo "[+]: Closing.."
       break
       ;;
-    "msk")
-      if [ "${args_array[0]}" = "--configure-ddos" ]; then
-        configure_ddos
-        continue
-      elif [ "${args_array[0]}" = "--attack-ddos" ]; then
-        run_ddos_attack
-        continue
-      elif [ "${args_array[0]}" = "--show-progress(ddos)" ]; then
-        show_ddos_progress
-        continue
-      elif [ "${args_array[0]}" = "--update" ]; then
-        auto_update
-        continue
-      fi
-      ;;
     *)
-      if [ "$got_" -eq 0 ]; then
-        echo "[!]: Unknown command: $cmd, trying to execute in Bash..."
-      fi
-      full_cmd="$cmd"
-      if [ ${#args_array[@]} -gt 0 ]; then
-        full_cmd+=" ${args_array[*]}"
-      fi
-      # Try to execute, capture error
-      if ! eval "$full_cmd" 2>/dev/null; then
-        echo "[!]: Command not found or failed: $cmd"
-      fi
+      eval "$line" 2>/dev/null || echo "[!] Unknown command: $cmd"
       ;;
   esac
 done

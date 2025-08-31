@@ -35,6 +35,8 @@ bash main.sh
 - `msk --configure-ddos` : Configure DDoS attack parameters
 - `msk --attack-ddos` : Run DDoS attack 
 - `msk --update` : Update MSockets6 from GitHub
+- `msk --get-ddos-dry` : Get preview of attack
+- `msk --get-ddos-mem` : Get estimated resources 
 - `clear` / `cls` : Clear the screen
 - `/fallback_ on|off|toggle` : Toggle fallback mode
 - `exit` : Exit the shell
@@ -53,5 +55,5 @@ Apache 2.0
 ## Expected SHA256:
 
 ```txt
-SHA: fcd4640ca9e6af97c0a20e6e4e06658a5ccc9799e498733838554d699ea28005 | main.sh
+SHA: de0739eb21e2e5fd768827539371ad8d093909ced7edc9c44ae7ef4d946039bd | main.sh
 ```
