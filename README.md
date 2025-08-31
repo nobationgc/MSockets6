@@ -37,6 +37,7 @@ bash main.sh
 - `msk --update` : Update MSockets6 from GitHub
 - `msk --get-ddos-dry` : Get preview of attack
 - `msk --get-ddos-mem` : Get estimated resources 
+- `msk --get-ddos-preview` : Shows a dry run / preview of the DDoS attack.
 - `clear` / `cls` : Clear the screen
 - `/fallback_ on|off|toggle` : Toggle fallback mode
 - `exit` : Exit the shell
