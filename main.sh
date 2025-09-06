@@ -21,7 +21,7 @@ trap on_sigint SIGINT
 
 banner() {
   echo "=================================="
-  echo "          MSockets6 v0.1         "
+  echo "          MSockets6 v0.2         "
   echo "     Developed by Kryos Group   "
   echo "=================================="
   echo ""
